@@ -62,7 +62,10 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
     
     // Register supplementary view class
     [_collectionView registerClass:[AlbumTitleReusableView class] forSupplementaryViewOfKind:AlbumTitleKind withReuseIdentifier:AlbumTitleIdentifier];
- 
+    
+    _firstAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"0.jpg", @"1.jpg",@"2.jpg",@"3.jpg"]];
+    _secondAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"4.jpg",@"5.jpg",@"6.jpg",@"7.jpg"]];
+    
 }
 
 #pragma mark - UICollectionViewDatasource
@@ -72,7 +75,7 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return (section == 0) ? 4 : 7;
+    return (section == 0) ? [_firstAlbumImages count] : [_secondAlbumImages count];
 }
 
 
@@ -81,7 +84,7 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
     // setup cell
     PhotoCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:PhotoCellIdentifier forIndexPath:indexPath];
   
-    NSString * imageName = [NSString stringWithFormat:@"%i.jpg", indexPath.row % 8];
+    NSString * imageName = (indexPath.section == 0) ? [_firstAlbumImages objectAtIndex:indexPath.row] : [_secondAlbumImages objectAtIndex:indexPath.row];
   
     [cell setImageNamed:imageName];
     
@@ -113,7 +116,19 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     NSLog(@"Select cell :%@", indexPath);
+    
+    [collectionView performBatchUpdates:^{
+
+        // Update model first
+        (indexPath.section == 0) ? [_firstAlbumImages removeObjectAtIndex:indexPath.row] : [_secondAlbumImages removeObjectAtIndex:indexPath.row];
+   
+        // Now delete the items from the collection view.
+        [collectionView deleteItemsAtIndexPaths:@[indexPath]];
+        
+    } completion:nil];
+    
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath {

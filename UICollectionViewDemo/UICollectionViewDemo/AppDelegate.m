@@ -10,22 +10,15 @@
 
 #import "FirstViewController.h"
 
-#import "SecondViewController.h"
-
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    UIViewController *viewController1, *viewController2;
-
-    viewController1 = [[FirstViewController alloc] init];
-    viewController2 = [[SecondViewController alloc] init];
+    FirstViewController *viewController1 = [[FirstViewController alloc] init];
    
-    self.tabBarController = [[UITabBarController alloc] init];
-    self.tabBarController.viewControllers = @[viewController1, viewController2];
-    self.window.rootViewController = self.tabBarController;
+    self.window.rootViewController = viewController1;
     [self.window makeKeyAndVisible];
     return YES;
 }

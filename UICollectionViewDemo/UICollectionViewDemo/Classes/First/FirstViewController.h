@@ -25,6 +25,9 @@
 
 @interface FirstViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate> {
     __weak UICollectionView * _collectionView;
+    
+    NSMutableArray * _firstAlbumImages;
+    NSMutableArray * _secondAlbumImages;
 }
 
 @end
