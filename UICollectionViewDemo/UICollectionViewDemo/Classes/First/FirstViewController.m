@@ -10,7 +10,6 @@
 
 static NSString * const PhotoCellIdentifier = @"PhotoCell";
 static NSString * const AlbumTitleIdentifier = @"AlbumTitle";
-static NSString * const AlbumTitleKind = @"AlbumTitleKind";
 
 @interface FirstViewController ()
 
@@ -35,9 +34,9 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
     
     // UICollection view must be initalized with non-nil layout parameter
     
-    GridPhotoLayout * gridPhotoLayout = [[GridPhotoLayout alloc] init];
+    _gridPhotoLayout = [[GridPhotoLayout alloc] init];
     
-    UICollectionView * collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:gridPhotoLayout];
+    UICollectionView * collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:_gridPhotoLayout];
     [collectionView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
     [collectionView setBackgroundColor:[UIColor colorWithWhite:0.8 alpha:1]];
     [view addSubview:collectionView];
@@ -53,6 +52,9 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
 {
     [super viewDidLoad];
     
+    _firstAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"0.jpg", @"1.jpg",@"2.jpg",@"3.jpg"]];
+    _secondAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"4.jpg",@"5.jpg",@"6.jpg",@"7.jpg"]];
+    
     // Set delegate & datasource
     [_collectionView setDelegate:self];
     [_collectionView setDataSource:self];
@@ -61,10 +63,7 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
     [_collectionView registerClass:[PhotoCollectionViewCell class] forCellWithReuseIdentifier:PhotoCellIdentifier];
     
     // Register supplementary view class
-    [_collectionView registerClass:[AlbumTitleReusableView class] forSupplementaryViewOfKind:AlbumTitleKind withReuseIdentifier:AlbumTitleIdentifier];
-    
-    _firstAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"0.jpg", @"1.jpg",@"2.jpg",@"3.jpg"]];
-    _secondAlbumImages = [[NSMutableArray alloc] initWithArray:@[@"4.jpg",@"5.jpg",@"6.jpg",@"7.jpg"]];
+    [_collectionView registerClass:[AlbumTitleReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:AlbumTitleIdentifier];
     
 }
 
@@ -94,7 +93,7 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath;
 {
     // setup supplementary view
-    AlbumTitleReusableView *titleView = [collectionView dequeueReusableSupplementaryViewOfKind:AlbumTitleKind withReuseIdentifier:AlbumTitleIdentifier forIndexPath:indexPath];
+    AlbumTitleReusableView *titleView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:AlbumTitleIdentifier forIndexPath:indexPath];
     
     [titleView setTitle:[NSString stringWithFormat:@"Album at section: %i", indexPath.section]];
     
@@ -119,15 +118,18 @@ static NSString * const AlbumTitleKind = @"AlbumTitleKind";
     
     NSLog(@"Select cell :%@", indexPath);
     
-    [collectionView performBatchUpdates:^{
 
+    [collectionView performBatchUpdates:^{
+        
         // Update model first
         (indexPath.section == 0) ? [_firstAlbumImages removeObjectAtIndex:indexPath.row] : [_secondAlbumImages removeObjectAtIndex:indexPath.row];
-   
+        
         // Now delete the items from the collection view.
         [collectionView deleteItemsAtIndexPaths:@[indexPath]];
         
-    } completion:nil];
+    } completion:^(BOOL finished) {
+        [collectionView reloadData];
+    }];
     
 }
 

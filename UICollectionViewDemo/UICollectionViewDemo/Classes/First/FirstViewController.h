@@ -25,6 +25,8 @@
 
 @interface FirstViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate> {
     __weak UICollectionView * _collectionView;
+   
+    GridPhotoLayout * _gridPhotoLayout;
     
     NSMutableArray * _firstAlbumImages;
     NSMutableArray * _secondAlbumImages;

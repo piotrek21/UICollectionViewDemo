@@ -40,7 +40,7 @@
 
 - (void)setImageNamed:(NSString *)imageNamed {
     [_imageView setImage:[UIImage imageNamed:imageNamed]];
-    [_imageView setHighlightedImage:[UIImage imageNamed:@"first"]];
+   // [_imageView setHighlightedImage:[UIImage imageNamed:@"first"]];
 }
 
 @end
